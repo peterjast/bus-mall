@@ -1,93 +1,120 @@
 'use strict';
 
+const productNames = ['bag', 'banana', 'bathroom', 'boots', 'breakfast', 'bubblegum', 'chair', 'cthulhu', 'dog-duck', 'dragon', 'pen', 'pet-sweep', 'scissors', 'shark', 'sweep', 'tauntaun', 'unicorn', 'usb', 'water-can', 'wine-glass'];
+
 const productImageSectionTag = document.getElementById('all-products');
 const leftProductImageTag = document.getElementById('left-product-img');
 const middleProductImageTag = document.getElementById('middle-product-img');
 const rightProductImageTag = document.getElementById('right-product-img');
 
+const maxRounds = 25;
 let totalClicks = 0;
 
-let leftProductOnThePage = null;
-let middleProductOnThePage = null;
-let rightProductOnThePage = null;
+let leftProduct = null;
+let middleProduct = null;
+let rightProduct = null;
 
-const ProductPicture = function (name, imageSrc) {
+const Product = function(name, imageSrc) {
   this.name = name;
   this.clicks = 0;
   this.timesShown = 0;
   this.url = imageSrc;
-  this.showing = false;
-
-  ProductPicture.allImages.push(this);
+  
+  Product.allProducts.push(this);
 };
 
-ProductPicture.allImages = [];
+Product.allProducts = [];
 
-const renderNewProducts = function (leftIndex, middleIndex, rightIndex){
-  leftProductImageTag.src = ProductPicture.allImages[leftIndex].url;
-  leftProductImageTag.alt = ProductPicture.allImages[leftIndex].name;
-  middleProductImageTag.src = ProductPicture.allImages[middleIndex].url;
-  middleProductImageTag.alt = ProductPicture.allImages[middleIndex].name;
-  rightProductImageTag.src = ProductPicture.allImages[rightIndex].url;
-  rightProductImageTag.alt = ProductPicture.allImages[rightIndex].name;
-};
+function createProducts() {
+     for(let i = 0; i < productNames.length; i++){
+        const productName = productNames[i];
+        new Product(productName, 'img/' + productName + '.jpg');
+     }
+}
 
-const pickNewProducts = function(){
-  const leftIndex = Math.floor(Math.random() * ProductPicture.allImages.length);
-  let rightIndex;
-  let middleIndex;
-  do {
-    rightIndex = Math.floor(Math.random() * ProductPicture.allImages.length);
-    middleIndex = Math.floor(Math.random() * ProductPicture.allImages.length);
+function pickNewProducts(){
+  
+  shuffle(Product.allProducts);
 
-  } while (rightIndex === leftIndex || middleIndex === leftIndex || rightIndex === middleIndex);
+  const safeProducts = [];
 
-  leftProductOnThePage = ProductPicture.allImages[leftIndex];
-  leftProductOnThePage.showing = true;
-  middleProductOnThePage = ProductPicture.allImages[middleIndex];
-  leftProductOnThePage.showing = true;
-  rightProductOnThePage = ProductPicture.allImages[rightIndex];
-  leftProductOnThePage.showing = true;
+  for (let i = 0; i< Product.allProducts.length; i++){
 
-  renderNewProducts(leftIndex, middleIndex, rightIndex);
-};
+      const product = Product.allProducts[i];
+      
+      if(product !== leftProduct && product !== middleProduct && product !== rightProduct) {
+        
+        safeProducts.push(product);
+
+        if(safeProducts.length === Product.allProducts.length - 3){
+          break;
+        }
+      }
+  }
+
+  leftProduct = safeProducts[0];
+  middleProduct = safeProducts[1];
+  rightProduct = safeProducts[2];  
+ 
+}
+
+function renderNewProducts(){
+
+    leftProductImageTag.src = leftProduct.url;
+    leftProductImageTag.alt = leftProduct.name;
+  
+    middleProductImageTag.src = middleProduct.url;
+    middleProductImageTag.alt = middleProduct.name;
+  
+    rightProductImageTag.src = rightProduct.url;
+    rightProductImageTag.alt = rightProduct.name;
+  
+    leftProduct.timesShown++;
+    middleProduct.timesShown++;
+    rightProduct.timesShown++;
+  }
+
 
 const handleClickOnProduct = function(event){
 
-  if(totalClicks < 25){
+    const productId = event.target.id;
 
-    const thingWeClickedOn = event.target;
-    const id = thingWeClickedOn.id;
-
-    if(id === 'left-product-img' || id === 'middle-product-img' || id === 'right-product-img'){
-
-      if(id === 'left-product-img'){
-        leftProductOnThePage.clicks++;
-      }
-      if(id === 'middle-product-img'){
-        rightProductOnThePage.clicks++;
-      }
-      if(id === 'right-product-img'){
-        rightProductOnThePage.clicks++;
-      }
-
-      leftProductOnThePage.timesShown++;
-      middleProductOnThePage.timesShown++;
-      rightProductOnThePage.timesShown++;
-
-      pickNewProducts();
+    switch (productId) {
+  
+      case leftProductImageTag.id:
+        leftProduct.clicks += 1;
+        pickNewProducts();
+        renderNewProducts();
+        totalClicks += 1;
+        break;
+  
+      case middleProductImageTag.id:
+        middleProduct.clicks += 1;
+        pickNewProducts();
+        renderNewProducts();
+        totalClicks += 1;
+        break;
+  
+      case rightProductImageTag.id:
+        rightProduct.clicks += 1;
+        pickNewProducts();
+        renderNewProducts();
+        totalClicks += 1;
+        break;
+  
+      default:
+        alert('mind the gap!');
     }
-  }
 
-  totalClicks++;
-
-  if(totalClicks === 25){
-    productImageSectionTag.removeEventListener('click', handleClickOnProduct);
-    displayResultsButton();
-    const resultButtonElem = document.getElementById('result-button');
-    resultButtonElem.addEventListener('click', renderResults);
-  }
-};
+    if(totalClicks === maxRounds){
+        productImageSectionTag.removeEventListener('click', handleClickOnProduct);
+        displayResultsButton();
+        const resultButtonElem = document.getElementById('result-button');
+        resultButtonElem.addEventListener('click', renderResults);
+        renderChart();
+      }
+  
+}
 
 function displayResultsButton(){
   const resultsElem = document.getElementById('results');
@@ -107,34 +134,70 @@ function renderResults() {
   resultsElem.appendChild(resultsHeaderElem);
   const resultListElem = document.createElement('ul');
   resultsElem.appendChild(resultListElem);
-  for(let i = 0; i < ProductPicture.allImages.length; i++){
+  for(let i = 0; i < Product.allProducts.length; i++){
     const resultListItem = document.createElement('li');
-    resultListItem.textContent = ProductPicture.allImages[i].name + ' had ' + ProductPicture.allImages[i].clicks + ' votes, and was seen ' + ProductPicture.allImages[i].timesShown + ' times ';
+    resultListItem.textContent = Product.allProducts[i].name + ' had ' + Product.allProducts[i].clicks + ' votes, and was seen ' + Product.allProducts[i].timesShown + ' times ';
     resultListElem.appendChild(resultListItem);
   }
 }
 
+/* fisher yates style shuffle
+https://medium.com/@nitinpatel_20236/how-to-shuffle-correctly-shuffle-an-array-in-javascript-15ea3f84bfb
+*/
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * i)
+      const temp = array[i]
+      array[i] = array[j]
+      array[j] = temp
+    }
+  }
+
 productImageSectionTag.addEventListener('click', handleClickOnProduct);
 
-new ProductPicture('bag', 'img/bag.jpg');
-new ProductPicture('banana', 'img/banana.jpg');
-new ProductPicture('bathroom', 'img/bathroom.jpg');
-new ProductPicture('boots', 'img/boots.jpg');
-new ProductPicture('breakfast', 'img/breakfast.jpg');
-new ProductPicture('bubblegum', 'img/bubblegum.jpg');
-new ProductPicture('chair', 'img/chair.jpg');
-new ProductPicture('cthulhu', 'img/cthulhu.jpg');
-new ProductPicture('dog-duck', 'img/dog-duck.jpg');
-new ProductPicture('dragon', 'img/dragon.jpg');
-new ProductPicture('pen', 'img/pen.jpg');
-new ProductPicture('pet sweep', 'img/pet-sweep.jpg');
-new ProductPicture('scissors', 'img/scissors.jpg');
-new ProductPicture('shark', 'img/shark.jpg');
-new ProductPicture('sweep', 'img/sweep.png');
-new ProductPicture('tauntaun', 'img/tauntaun.jpg');
-new ProductPicture('unicorn', 'img/unicorn.jpg');
-new ProductPicture('usb', 'img/usb.gif');
-new ProductPicture('water can', 'img/water-can.jpg');
-new ProductPicture('wine glass', 'img/wine-glass.jpg');
+createProducts();
 
 pickNewProducts();
+
+renderNewProducts();
+
+function renderChart() {
+    
+    const votes = [];
+    const displayCount = [];
+    for(let i = 0; i < Product.allProducts.length; i++){
+        const voteCount = Product.allProducts[i].clicks;
+        const timesDisplayed = Product.allProducts[i].timesShown;
+        votes.push(voteCount);
+        displayCount.push(timesDisplayed);
+    }
+
+
+    console.log(votes);
+    const ctx = document.getElementById('canvas').getContext('2d');
+    new Chart(ctx, {
+      // The type of chart we want to create
+      type: 'bar',
+  
+      // The data for our dataset
+      data: {
+        labels: productNames,
+        datasets: [{
+          label: 'Votes',
+          backgroundColor: 'rgb(255, 99, 132)',
+          borderColor: 'rgb(255, 99, 132)',
+          data: votes
+        },
+        {
+          label: 'Times Shown',
+          backgroundColor: 'rgb(255, 99, 132)',
+          borderColor: 'rgb(255, 99, 132)',
+          data: displayCount
+        }]
+      },
+  
+      // Configuration options go here
+      options: {}
+    });
+}
+
