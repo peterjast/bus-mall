@@ -1,9 +1,9 @@
 'use strict';
 
-const productImageSectionTag = document.getElementById('all_products');
-const leftProductImageTag = document.getElementById('left_product_img');
-const middleProductImageTag = document.getElementById('middle_product_img');
-const rightProductImageTag = document.getElementById('right_product_img');
+const productImageSectionTag = document.getElementById('all-products');
+const leftProductImageTag = document.getElementById('left-product-img');
+const middleProductImageTag = document.getElementById('middle-product-img');
+const rightProductImageTag = document.getElementById('right-product-img');
 
 let totalClicks = 0;
 
@@ -41,7 +41,6 @@ const pickNewProducts = function(){
     middleIndex = Math.floor(Math.random() * ProductPicture.allImages.length);
 
   } while (rightIndex === leftIndex || middleIndex === leftIndex || rightIndex === middleIndex);
-  console.log(ProductPicture.allImages[leftIndex].name, ProductPicture.allImages[rightIndex].name);
 
   leftProductOnThePage = ProductPicture.allImages[leftIndex];
   leftProductOnThePage.showing = true;
@@ -60,15 +59,15 @@ const handleClickOnProduct = function(event){
     const thingWeClickedOn = event.target;
     const id = thingWeClickedOn.id;
 
-    if(id === 'left_product_img' || id === 'middle_product_img' || id === 'right_product_img'){
+    if(id === 'left-product-img' || id === 'middle-product-img' || id === 'right-product-img'){
 
-      if(id === 'left_product_img'){
+      if(id === 'left-product-img'){
         leftProductOnThePage.clicks++;
       }
-      if(id === 'middle_product_img'){
+      if(id === 'middle-product-img'){
         rightProductOnThePage.clicks++;
       }
-      if(id === 'right_goat_img'){
+      if(id === 'right-product-img'){
         rightProductOnThePage.clicks++;
       }
 
@@ -78,7 +77,6 @@ const handleClickOnProduct = function(event){
 
       pickNewProducts();
     }
-    console.log(event.target.id);
   }
 
   totalClicks++;
