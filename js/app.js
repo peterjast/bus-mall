@@ -46,7 +46,7 @@ function pickNewProducts(){
         
         safeProducts.push(product);
 
-        if(safeProducts.length === Product.allProducts.length - 3){
+        if(safeProducts.length === 3){
           break;
         }
       }
@@ -72,8 +72,8 @@ function renderNewProducts(){
     leftProduct.timesShown++;
     middleProduct.timesShown++;
     rightProduct.timesShown++;
-  }
 
+  }
 
 const handleClickOnProduct = function(event){
 
@@ -103,10 +103,25 @@ const handleClickOnProduct = function(event){
         break;
   
       default:
-        alert('mind the gap!');
+        alert('Click on an image!');
     }
 
     if(totalClicks === maxRounds){
+        if(localStorage.products === undefined){
+            localStorage.setItem('products', JSON.stringify(Product.allProducts));
+        }
+        if(localStorage.products !== undefined){
+            const storedProducts = JSON.parse(localStorage.getItem('products'));
+            for(let i = 0; i < Product.allProducts.length; i++){
+                for(let j = 0; j < storedProducts.length; j++){
+                    if(Product.allProducts[i].name === storedProducts[j].name){
+                        storedProducts[j].clicks += Product.allProducts[i].clicks;
+                        storedProducts[j].timesShown += Product.allProducts[i].timesShown; 
+                    }
+                }
+            } 
+            localStorage.setItem('products', JSON.stringify(storedProducts));           
+        }
         productImageSectionTag.removeEventListener('click', handleClickOnProduct);
         displayResultsButton();
         const resultButtonElem = document.getElementById('result-button');
@@ -123,7 +138,6 @@ function displayResultsButton(){
   resultsElem.appendChild(buttonElem);
   buttonElem.textContent = 'View Results';
 }
-
 
 function renderResults() {
   const resultButtonElem = document.getElementById('result-button');
@@ -163,11 +177,15 @@ renderNewProducts();
 
 function renderChart() {
     
+    const storedProducts = JSON.parse(localStorage.getItem('products'));
+
     const votes = [];
+    
     const displayCount = [];
-    for(let i = 0; i < Product.allProducts.length; i++){
-        const voteCount = Product.allProducts[i].clicks;
-        const timesDisplayed = Product.allProducts[i].timesShown;
+
+    for(let i = 0; i < storedProducts.length; i++){
+        const voteCount = storedProducts[i].clicks;
+        const timesDisplayed = storedProducts[i].timesShown;
         votes.push(voteCount);
         displayCount.push(timesDisplayed);
     }
