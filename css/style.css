@@ -6,12 +6,24 @@ body {
     background:radial-gradient(#2f2fa2c9, #242582);
     color:aliceblue;
     font-family: Arial, Helvetica, sans-serif;
+}
+
+html, body {
     height: 100%;
 }
 
 section {
     width: 100%;
-    margin: 4rem auto;
+    margin: 2.4rem auto;
+}
+
+button {
+    cursor: pointer;
+    font-weight: bolder;
+}
+
+.img {
+    cursor: pointer;
 }
 
 #all-products {
@@ -28,23 +40,31 @@ section {
     box-shadow: 3px 3px 3px 3px rgba(0, 0, 0, .5);
 }
 
-main {
+/* main {
     max-width: 960px;
     margin: 0 auto;
     overflow: hidden;
-}
+} */
 
 header {
     width: 100%;
-    background:linear-gradient(#F64C72, #553D67);
+    background:linear-gradient(#553D67, #F64C72);
     align-content: center;
     padding: 10px;
     margin-bottom: 15px;
+    box-shadow:2px 2px 4px rgba(0, 0, 0, .5);
 }
 
 button {
-    background:radial-gradient(#F64C72, #553D67);
+    background: #F64C72;
+    padding: 1em;
     color:#e7dbdb;
+    border-radius: 10px;
+}
+
+button:hover {
+    text-shadow: 0 0 3px #FF0000, 0 0 5px #0000FF;
+    box-shadow: 0 0 3px #FF0000, 0 0 5px #0000FF;
 }
 
 footer {
@@ -54,10 +74,11 @@ footer {
 footer {
     background:linear-gradient(#F64C72, #553D67);
     width: 100%;
-    height: 4em;
-    padding: 10px;
     text-align: center;
     color: #e7dbdb;
+    align-content: center;
+    padding: 10px;
+    text-shadow: 0 0 3px #FF0000, 0 0 5px #0000FF;
 }
 
 
@@ -82,15 +103,28 @@ h1 {
     color: #e7dbdb;
     font-family: 'Yellowtail', 'cursive';
     font-weight:bold;
+    text-shadow: 2px 2px 4px #000000;
+}
+
+#vote {
+    font-size: 1.8em;
+    color:#F64C72;
+    text-shadow: 0 0 3px #FF0000, 0 0 5px #0000FF;
+}
+
+#results {
+    max-width: 960px;
+    margin: 2rem auto;
+    text-align: center;
+    color: #e7dbdb;
+    font-family: 'Yellowtail', 'cursive';
+    font-size: 2em;
 }
 
 #canvas {
     color: #e7dbdb;
 }
 
-html, body {
-    height: 100%;
-}
 
 body {
     display: flex;
@@ -99,13 +133,58 @@ body {
 
 main {
     flex: 1 0 auto;
+    max-width: 960px;
+    margin: 0 auto;
 }
 
 footer {
     background:linear-gradient(#553D67, #F64C72);
     width: 100%;
-    height: 4em;
     padding: 10px;
     text-align: center;
     color: #e7dbdb;
+    text-shadow: 0 0 3px #FF0000, 0 0 5px #0000FF;
+    box-shadow: 0 0 3px #FF0000, 0 0 5px #0000FF;
 }
+
+ul {
+  list-style: none;
+  text-align: left;
+  margin-bottom: 3rem;
+}
+ul li::before {
+  content: "";
+  background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/3/fb-heart.gif);
+  background-size: contain;
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  position: relative;
+  top: 0.1rem;
+  margin-right: 0.2rem;
+}
+
+h2 {
+    color: #F64C72;
+    margin: 2rem;
+    text-shadow: 0 0 3px #FF0000, 0 0 5px #0000FF;
+}
+
+li {
+    line-height:1.5em;
+    width: 50%;
+    border-bottom:1px solid #ccc;
+    text-shadow: 0 0 3px #FF0000, 0 0 5px #0000FF;
+    float:left;
+    display:inline;
+}
+
+#chart-header {
+    font-family: 'Yellowtail', 'cursive';
+    font-size: 2em;
+    text-align: center;
+    align-content: center;
+    margin-top: 2rem;
+}
+
+
